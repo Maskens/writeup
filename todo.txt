@@ -1,0 +1,3 @@
+* Implememnt ability to input text using SDL, log it
+* Write out text
+* load in array with bunch of funny words

@@ -1,3 +1,4 @@
+#include "SDL2/SDL_stdinc.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -12,6 +13,7 @@ typedef struct {
 	int down;
 	int left;
 	int right;
+  SDL_bool running;
 } App;
 
 #define SCREEN_WIDTH 1024

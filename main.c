@@ -1,21 +1,25 @@
 #include <stdio.h>
 #include "src/game_def.h"
 #include "src/init.h"
+#include "src/input.h"
 
-void doInput();
-
-App app;
+void readFile(char words[][10]);
 
 int main() {
+  App app;
+  char words[1000][10];
+  readFile(words);
+
   TTF_Init();
 
   if(!init_SDL(&app)) {
     printf("Could not init SDL");
   }
 
+  app.running = SDL_TRUE;
+
   //Hack to get window to stay up
   SDL_Event event; 
-  int running = 1;
 
   SDL_Color foreground = {255, 255, 255};
 
@@ -27,12 +31,12 @@ int main() {
   Uint32 lastTime = 0;
   float x = 0;
 
-  while(running) { 
+  while(app.running) { 
     Uint32 time = SDL_GetTicks();
     deltaTime = time - lastTime;
     lastTime = time;
 
-    doInput();
+    doInput(&app);
 
     if (app.left) {
       x -= 1.0 * deltaTime;
@@ -64,80 +68,19 @@ int main() {
   return 0;
 }
 
-void doKeyDown(SDL_KeyboardEvent *event)
-{
-	if (event->repeat == 0)
-	{
-		if (event->keysym.scancode == SDL_SCANCODE_UP)
-		{
-			app.up = 1;
-		}
+void readFile(char words[][10]) {
+  FILE *fPtr;
+  fPtr = fopen("assets/words.txt", "r");
 
-		if (event->keysym.scancode == SDL_SCANCODE_DOWN)
-		{
-			app.down = 1;
-		}
+  int wordIndex = 0;
+  while(fgets(words[wordIndex], 255, fPtr) != NULL) {
+    wordIndex++;
+  }
 
-		if (event->keysym.scancode == SDL_SCANCODE_LEFT)
-		{
-			app.left = 1;
-		}
+  for(int i = 0; i < 1000; i++) {
+    printf("%s", words[i]);
+  }
 
-		if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
-		{
-			app.right = 1;
-		}
-	}
+  fclose(fPtr);
 }
 
-void doKeyUp(SDL_KeyboardEvent *event)
-{
-	if (event->repeat == 0)
-	{
-		if (event->keysym.scancode == SDL_SCANCODE_UP)
-		{
-			app.up = 0;
-		}
-
-		if (event->keysym.scancode == SDL_SCANCODE_DOWN)
-		{
-			app.down = 0;
-		}
-
-		if (event->keysym.scancode == SDL_SCANCODE_LEFT)
-		{
-			app.left = 0;
-		}
-
-		if (event->keysym.scancode == SDL_SCANCODE_RIGHT)
-		{
-			app.right = 0;
-		}
-	}
-}
-
-
-void doInput(void) {
-	SDL_Event event;
-
-	while (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			case SDL_QUIT:
-				exit(0);
-				break;
-
-			case SDL_KEYDOWN:
-				doKeyDown(&event.key);
-				break;
-
-			case SDL_KEYUP:
-				doKeyUp(&event.key);
-				break;
-
-			default:
-				break;
-		}
-	}
-}
