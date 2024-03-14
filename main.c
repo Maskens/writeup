@@ -2,15 +2,12 @@
 #include "src/game_def.h"
 #include "src/init.h"
 #include "src/input.h"
-
-void readFile(char words[][10]);
+#include "src/file.h"
 
 int main() {
   App app;
   char words[1000][10];
   readFile(words);
-
-  TTF_Init();
 
   if(!init_SDL(&app)) {
     printf("Could not init SDL");
@@ -18,7 +15,6 @@ int main() {
 
   app.running = SDL_TRUE;
 
-  //Hack to get window to stay up
   SDL_Event event; 
 
   SDL_Color foreground = {255, 255, 255};
@@ -66,21 +62,5 @@ int main() {
   SDL_DestroyWindow(app.window);
 
   return 0;
-}
-
-void readFile(char words[][10]) {
-  FILE *fPtr;
-  fPtr = fopen("assets/words.txt", "r");
-
-  int wordIndex = 0;
-  while(fgets(words[wordIndex], 255, fPtr) != NULL) {
-    wordIndex++;
-  }
-
-  for(int i = 0; i < 1000; i++) {
-    printf("%s", words[i]);
-  }
-
-  fclose(fPtr);
 }
 
